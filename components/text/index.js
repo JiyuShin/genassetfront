@@ -622,25 +622,37 @@ export default function TextPage() {
                         ? ""
                         : "Luna";
 
+                  const showSuggestionHint =
+                    String(m.text || "").startsWith(`오 ${nickname || "00"}이 왔구나! 하이~`);
+
                   return (
-                    <div key={m.id} className={styles.introRow}>
-                      <div className={styles.introAvatar}>
-                        {m.role === "user" ? (
-                          <div className={styles.userAvatar} aria-hidden="true" />
-                        ) : (
-                          <img
-                            className={styles.introAvatarImg}
-                            src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
-                            alt=""
-                          />
-                        )}
-                      </div>
-                      <div className={styles.chatBubbleGroup}>
-                        {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
-                        <div className={bubbleClass}>
-                          <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
+                    <div key={m.id} className={styles.chatMessageBlock}>
+                      <div className={styles.introRow}>
+                        <div className={styles.introAvatar}>
+                          {m.role === "user" ? (
+                            <div className={styles.userAvatar} aria-hidden="true" />
+                          ) : (
+                            <img
+                              className={styles.introAvatarImg}
+                              src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
+                              alt=""
+                            />
+                          )}
+                        </div>
+                        <div className={styles.chatBubbleGroup}>
+                          {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
+                          <div className={bubbleClass}>
+                            <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
+                          </div>
                         </div>
                       </div>
+                      {showSuggestionHint ? (
+                        <div className={styles.chatSuggestionHintWrap}>
+                          <div className={styles.chatSuggestionHintCard}>
+                            대화 속 감정이 포착되면 이모지 생성 제안이 나타나요!
+                          </div>
+                        </div>
+                      ) : null}
                     </div>
                   );
                 })}

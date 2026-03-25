@@ -828,6 +828,12 @@
   animation: introPop 0.6s ease both;
 }
 
+.chatMessageBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .introAvatar {
   width: 34px;
   height: 34px;
@@ -944,6 +950,48 @@
   display: grid;
   place-items: center;
   font-size: 14px;
+}
+
+.chatSuggestionHintWrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  opacity: 0;
+  animation: suggestionFadeIn 0.45s ease 2s both;
+}
+
+.chatSuggestionHintCard {
+  width: 366px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  opacity: 0.8;
+  backdrop-filter: blur(2px);
+  background: linear-gradient(91.44deg, #d0d9fd 0%, #d0dcf4 26.44%, #cbf2a7 63.46%, #c9ff78 100%);
+  border: 0.6px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 2px 0 4px #d1daf6;
+  border-radius: 50px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.5px;
+  line-height: 130%;
+  text-align: center;
+  letter-spacing: -0.022em;
+  color: #212121;
+}
+
+@keyframes suggestionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .candidateBtn {
@@ -1098,6 +1146,10 @@
   margin: 6px 0;
   opacity: 0.95;
   animation: introPop 0.6s ease both;
+}
+
+.chatSystem {
+  transform: translateY(5px);
 }
 
 .chatInitialComposer {
