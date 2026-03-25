@@ -1,6 +1,6 @@
 import styles from "@/styles/Text.module.css";
 import { useTextLogic } from "./logic";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import GradientText from "@/components/ui/GradientText";
 
 const AVATAR_1 = "https://www.figma.com/api/mcp/asset/18dff48d-f38a-47be-a34a-04b06dd781d0";
@@ -86,35 +86,52 @@ function MicIcon() {
   );
 }
 
-function ChatInputSmileIcon() {
+function SendIcon() {
+  return (
+    <svg viewBox="0 0 34 34" className={styles.chatMicIcon} aria-hidden="true">
+      <path d="M9.5 24.6 27 17 9.5 9.4l3.1 6.9L27 17l-14.4.7-3.1 6.9Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ChatInputSmileIcon({ animated = false }) {
   return (
     <svg viewBox="0 0 30 30" className={styles.chatInputSmileIcon} aria-hidden="true">
+      {animated ? (
+        <defs>
+          <linearGradient id="chat-input-smile-gradient" gradientUnits="userSpaceOnUse" x1="-8" y1="0" x2="38" y2="0">
+            <stop offset="0%" stopColor="#5227FF" />
+            <stop offset="50%" stopColor="#4CC9FF" />
+            <stop offset="100%" stopColor="#B19EEF" />
+            <animate
+              attributeName="x1"
+              values="-8;8;-8"
+              dur="2.2s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="x2"
+              values="38;54;38"
+              dur="2.2s"
+              repeatCount="indefinite"
+            />
+          </linearGradient>
+        </defs>
+      ) : null}
       <circle
         cx="15"
         cy="15"
         r="10.8"
         fill="none"
-        stroke="currentColor"
+        stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"}
         strokeWidth="2.54174"
       />
-      <path
-        d="M11.4 11.7h.01"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.54174"
-        strokeLinecap="round"
-      />
-      <path
-        d="M18.6 11.7h.01"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.54174"
-        strokeLinecap="round"
-      />
+      <path d="M11.2 11.8h1.1" fill="none" stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"} strokeWidth="2.54174" strokeLinecap="round" />
+      <path d="M17.7 11.8h1.1" fill="none" stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"} strokeWidth="2.54174" strokeLinecap="round" />
       <path
         d="M11.2 18c1.05 1.35 2.35 2.02 3.8 2.02 1.45 0 2.75-.67 3.8-2.02"
         fill="none"
-        stroke="currentColor"
+        stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"}
         strokeWidth="2.54174"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -122,14 +139,14 @@ function ChatInputSmileIcon() {
       <path
         d="M20.2 7.7v4.6"
         fill="none"
-        stroke="currentColor"
+        stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"}
         strokeWidth="2.54174"
         strokeLinecap="round"
       />
       <path
         d="M17.9 10h4.6"
         fill="none"
-        stroke="currentColor"
+        stroke={animated ? "url(#chat-input-smile-gradient)" : "currentColor"}
         strokeWidth="2.54174"
         strokeLinecap="round"
       />
@@ -350,14 +367,31 @@ export default function TextPage() {
     draftPreviewIndex,
     setDraftPreviewIndex,
     completeDraftWithPreview,
+    startComposer,
     goNext
   } = useTextLogic();
   const nicknameRef = useRef(null);
   const composerRef = useRef(null);
   const initialComposerRef = useRef(null);
+  const [initialComposerHeight, setInitialComposerHeight] = useState(47);
   const hasJoinSystemVisible = timeline
     .slice(0, revealedCount)
     .some((m) => m.type === "system" && String(m.text || "").includes("채팅에 참여했어요!"));
+  const handleOpenGenEmoji = () => {
+    if (!input.trim() || liveCandidates.length === 0) return;
+    startComposer();
+    window.setTimeout(() => {
+      composerRef.current?.focus();
+    }, 0);
+  };
+
+  useEffect(() => {
+    const el = initialComposerRef.current;
+    if (!el || showComposer || !hasJoinSystemVisible) return;
+    el.style.height = "47px";
+    const nextHeight = Math.max(47, Math.min(el.scrollHeight, 148));
+    setInitialComposerHeight(nextHeight);
+  }, [input, showComposer, hasJoinSystemVisible]);
 
   return (
     <main className={styles.page}>
@@ -648,11 +682,20 @@ export default function TextPage() {
                         </div>
                       </div>
                       {showSuggestionHint ? (
-                        <div className={styles.chatSuggestionHintWrap}>
-                          <div className={styles.chatSuggestionHintCard}>
-                            대화 속 감정이 포착되면 이모지 생성 제안이 나타나요!
+                        <>
+                          <div className={styles.chatSuggestionHintWrap}>
+                            <div className={styles.chatSuggestionHintCard}>
+                              대화 속 감정이 포착되면 이모지 생성 제안이 나타나요!
+                            </div>
                           </div>
-                        </div>
+                          {input.trim() ? (
+                            <div className={styles.chatActionHintWrap}>
+                              <div className={styles.chatActionHintCard}>
+                                얼굴 아이콘을 눌러 젠 이모지 생성을시작해보세요!
+                              </div>
+                            </div>
+                          ) : null}
+                        </>
                       ) : null}
                     </div>
                   );
@@ -667,6 +710,7 @@ export default function TextPage() {
                         ? `${styles.chatInitialInputWrap} ${styles.chatInitialInputWrapActive}`
                         : styles.chatInitialInputWrap
                     }
+                    style={{ height: `${initialComposerHeight}px` }}
                     onMouseDown={(e) => {
                       e.preventDefault();
                       initialComposerRef.current?.focus();
@@ -686,17 +730,32 @@ export default function TextPage() {
                       aria-label="메시지 입력"
                     />
                   </div>
-                  <button className={styles.chatInitialSmileBtn} type="button" aria-label="이모지 생성">
-                    <ChatInputSmileIcon />
+                  <button
+                    className={styles.chatInitialSmileBtn}
+                    type="button"
+                    aria-label="이모지 생성"
+                    onClick={handleOpenGenEmoji}
+                  >
+                    <ChatInputSmileIcon animated={liveCandidates.length > 0} />
                   </button>
-                  <button className={styles.chatInitialMicBtn} type="button" aria-label="음성 입력">
-                    <MicIcon />
+                  <button
+                    className={styles.chatInitialMicBtn}
+                    type="button"
+                    aria-label={input.trim() ? "전송" : "음성 입력"}
+                  >
+                    {input.trim() ? <SendIcon /> : <MicIcon />}
                   </button>
                 </div>
               ) : null}
 
               {showComposer ? (
-                <div className={styles.figComposer}>
+                <div
+                  className={styles.figComposer}
+                  style={{
+                    width: `${input.trim() ? 335 : 282}px`,
+                    ["--composer-seed-height"]: `${initialComposerHeight}px`
+                  }}
+                >
                   <div className={draftSelectedTerm ? `${styles.composerPill} ${styles.composerPillActive}` : styles.composerPill}>
                     {draftSelectedTerm ? "제이모지 생성 시작" : "제이모지 생성"}
                   </div>

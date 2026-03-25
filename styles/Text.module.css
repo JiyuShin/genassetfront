@@ -957,11 +957,42 @@
   justify-content: center;
   padding-top: 12px;
   opacity: 0;
-  animation: suggestionFadeIn 0.45s ease 2s both;
+  animation: suggestionFadeIn 0.45s ease 2s forwards, suggestionFadeOut 0.45s ease 14s forwards;
+}
+
+.chatActionHintWrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+  opacity: 0;
+  animation: suggestionFadeIn 0.45s ease forwards, suggestionFadeOut 0.45s ease 12s forwards;
 }
 
 .chatSuggestionHintCard {
   width: 366px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  opacity: 0.8;
+  backdrop-filter: blur(2px);
+  background: linear-gradient(91.44deg, #d0d9fd 0%, #d0dcf4 26.44%, #cbf2a7 63.46%, #c9ff78 100%);
+  border: 0.6px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 2px 0 4px #d1daf6;
+  border-radius: 50px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15.5px;
+  line-height: 130%;
+  text-align: center;
+  letter-spacing: -0.022em;
+  color: #212121;
+}
+
+.chatActionHintCard {
+  width: 386px;
   min-height: 58px;
   display: flex;
   align-items: center;
@@ -991,6 +1022,17 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes suggestionFadeOut {
+  from {
+    opacity: 0.8;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 
@@ -1162,44 +1204,23 @@
   box-sizing: border-box;
   position: absolute;
   width: 282px;
-  height: 47px;
   left: 16px;
-  top: 813px;
+  bottom: 14px;
+  min-height: 47px;
   background: rgba(180, 195, 255, 0.6);
   border: 0.6px solid rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(6px);
   border-radius: 100px;
   display: flex;
-  align-items: center;
-  padding: 0 18px;
+  align-items: flex-start;
+  padding: 12px 18px;
   pointer-events: auto;
-  transition: width 0.24s ease, padding-right 0.24s ease;
+  transition: width 0.24s ease, padding-right 0.24s ease, min-height 0.24s ease;
 }
 
 .chatInitialInputWrapActive {
   width: 335px;
-  padding-right: 56px;
-}
-
-.chatInitialInputMirror {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  pointer-events: none;
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow: hidden;
-}
-
-.chatInitialInputMirror .inputMirrorText {
-  color: #6f6f6f;
-}
-
-.chatInitialInputMirror .initialDraftCandidate {
-  font-weight: 700;
-  color: #6f6f6f;
+  padding-right: 64px;
 }
 
 .chatInitialTextarea {
@@ -1223,10 +1244,13 @@
   font-size: 16px;
   line-height: 130%;
   letter-spacing: -0.022em;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 transparent;
   caret-color: #6f6f6f;
   overflow: hidden;
+  margin: 0;
 }
 
 .chatInitialTextarea::placeholder {
@@ -1236,6 +1260,28 @@
 
 .chatInitialTextarea:focus::placeholder {
   opacity: 0;
+}
+
+.chatInitialInputMirror {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 18px;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.chatInitialInputMirror .inputMirrorText {
+  color: #6f6f6f;
+}
+
+.chatInitialInputMirror .initialDraftCandidate {
+  font-weight: 700;
+  color: #6f6f6f;
 }
 
 .chatInitialSmileBtn,
@@ -1284,8 +1330,7 @@
 .figComposer {
   position: absolute;
   left: 16px;
-  right: 16px;
-  bottom: 16px;
+  bottom: 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1336,6 +1381,7 @@
   width: 100%;
   border-radius: 26px;
   overflow: hidden;
+  min-height: calc(var(--composer-seed-height, 47px) + 68px);
 }
 
 .draftPreviewRow {
