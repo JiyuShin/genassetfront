@@ -1173,30 +1173,68 @@
   align-items: center;
   padding: 0 18px;
   pointer-events: auto;
+  transition: width 0.24s ease, padding-right 0.24s ease;
 }
 
-.chatInitialInput {
+.chatInitialInputWrapActive {
+  width: 335px;
+  padding-right: 56px;
+}
+
+.chatInitialInputMirror {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.chatInitialInputMirror .inputMirrorText {
+  color: #6f6f6f;
+}
+
+.chatInitialInputMirror .initialDraftCandidate {
+  font-weight: 700;
+  color: #6f6f6f;
+}
+
+.chatInitialTextarea {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   border: 0;
   outline: none;
-  background: transparent;
+  resize: none;
+  background: transparent !important;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 100px;
+  padding: 12px 18px;
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 130%;
   letter-spacing: -0.022em;
-  color: #6f6f6f;
-  padding: 0;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: #6f6f6f;
+  overflow: hidden;
 }
 
-.chatInitialInput::placeholder {
+.chatInitialTextarea::placeholder {
   color: #6f6f6f;
   opacity: 1;
 }
 
-.chatInitialInput:focus::placeholder {
+.chatInitialTextarea:focus::placeholder {
   opacity: 0;
 }
 

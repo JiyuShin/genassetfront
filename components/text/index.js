@@ -354,6 +354,7 @@ export default function TextPage() {
   } = useTextLogic();
   const nicknameRef = useRef(null);
   const composerRef = useRef(null);
+  const initialComposerRef = useRef(null);
   const hasJoinSystemVisible = timeline
     .slice(0, revealedCount)
     .some((m) => m.type === "system" && String(m.text || "").includes("채팅에 참여했어요!"));
@@ -660,12 +661,28 @@ export default function TextPage() {
 
               {!showComposer && hasJoinSystemVisible ? (
                 <div className={styles.chatInitialComposer}>
-                  <div className={styles.chatInitialInputWrap}>
-                    <input
-                      className={styles.chatInitialInput}
+                  <div
+                    className={
+                      input.trim()
+                        ? `${styles.chatInitialInputWrap} ${styles.chatInitialInputWrapActive}`
+                        : styles.chatInitialInputWrap
+                    }
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      initialComposerRef.current?.focus();
+                    }}
+                  >
+                    <div className={styles.chatInitialInputMirror} aria-hidden="true">
+                      <InputMirror text={input} candidates={liveCandidates} selected={null} highlightMode="bold" />
+                    </div>
+                    <textarea
+                      ref={initialComposerRef}
+                      className={styles.chatInitialTextarea}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       placeholder="|메시지 입력"
+                      rows={1}
+                      spellCheck={false}
                       aria-label="메시지 입력"
                     />
                   </div>
