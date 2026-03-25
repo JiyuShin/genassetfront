@@ -35,6 +35,21 @@ function SmilePlusIcon() {
   );
 }
 
+function BackArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.chatHeaderBackIcon} aria-hidden="true">
+      <path
+        d="M19 12H7M12 17L7 12L12 7"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -220,7 +235,6 @@ export default function TextPage() {
     nickname,
     setNickname,
     joinChat,
-    dateText,
     timeline,
     revealedCount,
     input,
@@ -329,7 +343,36 @@ export default function TextPage() {
           </div>
         </div>
       ) : step === "join" ? (
-        <div className={styles.onboardingPhone + " " + styles.phoneBlue}>
+        <div className={styles.joinWireframePhone}>
+          <div className={styles.joinStatusBar} aria-hidden="true">
+            <div className={styles.joinStatusTimeWrap}>
+              <div className={styles.joinStatusTime}>9:41</div>
+            </div>
+
+            <div className={styles.joinStatusIcons}>
+              <div className={styles.joinCellular}>
+                <span className={styles.joinCellularBarOne} />
+                <span className={styles.joinCellularBarTwo} />
+                <span className={styles.joinCellularBarThree} />
+                <span className={styles.joinCellularBarFour} />
+              </div>
+
+              <div className={styles.joinWifi}>
+                <span className={styles.joinWifiArcOne} />
+                <span className={styles.joinWifiArcTwo} />
+                <span className={styles.joinWifiArcThree} />
+              </div>
+
+              <div className={styles.joinBattery}>
+                <span className={styles.joinBatteryBorder} />
+                <span className={styles.joinBatteryCap} />
+                <span className={styles.joinBatteryCapacity} />
+              </div>
+            </div>
+
+            <div className={styles.joinFloatingIsland} />
+          </div>
+
           <div className={styles.onboardingCenter}>
             <div className={styles.avatarStack} aria-hidden="true">
               <div className={styles.avatarOne}>
@@ -345,222 +388,273 @@ export default function TextPage() {
           </div>
         </div>
       ) : (
-        <div className={styles.chatPhone}>
-          <div className={styles.chatDate}>{dateText}</div>
-
-          <div ref={listRef} className={styles.chatStream} aria-label="채팅">
-            {timeline.slice(0, revealedCount).map((m) => {
-              if (m.type === "system") {
-                return (
-                  <div key={m.id} className={styles.chatSystem}>
-                    {m.text}
+        <div className={styles.chatStageBackground}>
+          <div className={styles.chatStageDivider} aria-hidden="true" />
+          <div className={styles.chatStageDesktopLayer} aria-hidden="true">
+            <div className={styles.textDesktopCanvas}>
+              <div className={styles.textDesktopUi}>
+                <div className={styles.textDesktopBrand}>
+                  <div className={styles.desktopSmileIconWrap}>
+                    <SmilePlusIcon />
                   </div>
-                );
-              }
-
-              if (m.type === "analysis") {
-                const a = m.analysis || {};
-                return (
-                  <div key={m.id} className={styles.analysisRow}>
-                    <div className={styles.analysisCard}>
-                      <div className={styles.analysisLine}>1. 캐릭터: {a.character || "-"}</div>
-                      <div className={styles.analysisLine}>
-                        2. 행동 및 감정: {a.action || "-"} / {a.emotion || "-"}
-                      </div>
-                      <div className={styles.analysisLine}>3. 외형 묘사 및 특징: {a.appearance || "-"}</div>
-                      <div className={styles.analysisLine}>
-                        4. 소품 및 특수 소품: {(a.props && a.props.length ? a.props.join(", ") : "-")}
-                      </div>
-                      <div className={styles.analysisLine}>5. 이미지 저장 이름: {a.saveName || "-"}</div>
-                      <div className={styles.analysisLine}>6. 이미지 생성 프롬프트: {a.imagePrompt || "-"}</div>
-                      <div className={styles.analysisLine}>
-                        7. 제목/표현어: {a.title || "-"} / {a.expressionWord || "-"}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              if (m.type === "image") {
-                return (
-                  <div key={m.id} className={styles.introRow}>
-                    <div className={styles.introAvatar}>
-                      <img
-                        className={styles.introAvatarImg}
-                        src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
-                        alt=""
-                      />
-                    </div>
-                    <div className={styles.figImageCard}>
-                      <div className={styles.figImageLabel}>{m.label || "예시"}</div>
-                      <img className={styles.figImage} src={m.src} alt={m.label || ""} />
-                      {m.reaction ? <div className={styles.figReaction}>{m.reaction}</div> : null}
-                    </div>
-                  </div>
-                );
-              }
-
-              if (m.type === "generatedImage") {
-                const isSelected = Number(m.index) === Number(m.selectedIndex);
-                return (
-                  <div key={m.id} className={styles.introRow}>
-                    <div className={styles.introAvatar}>
-                      <img className={styles.introAvatarImg} src={AVATAR_2} alt="" />
-                    </div>
-                    <div className={styles.figImageCard}>
-                      <div className={styles.figImageLabel}>{isSelected ? "선택된 이미지" : "생성 이미지"}</div>
-                      {m.src ? (
-                        <img
-                          className={isSelected ? `${styles.figImage} ${styles.figImageSelected}` : styles.figImage}
-                          src={m.src}
-                          alt={isSelected ? "선택된 생성 이미지" : "생성 이미지"}
-                        />
-                      ) : (
-                        <div
-                          className={isSelected ? `${styles.figColorPreview} ${styles.figColorPreviewSelected}` : styles.figColorPreview}
-                          style={{ background: m.color || "#D1D5DB" }}
-                          aria-label={isSelected ? "선택된 생성 이미지" : "생성 이미지"}
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              }
-
-              const bubbleClass =
-                m.variant === "userWhite"
-                  ? styles.userBubble
-                  : m.variant === "blue"
-                  ? styles.figBubbleBlue
-                  : m.variant === "yellowPink"
-                    ? styles.figBubbleYellowPink
-                    : styles.figBubbleYellow;
-
-              return (
-                <div key={m.id} className={styles.introRow}>
-                  <div className={styles.introAvatar}>
-                    {m.role === "user" ? (
-                      <div className={styles.userAvatar} aria-hidden="true" />
-                    ) : (
-                      <img
-                        className={styles.introAvatarImg}
-                        src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
-                        alt=""
-                      />
-                    )}
-                  </div>
-                  <div className={bubbleClass}>
-                    <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
-                  </div>
+                  <div className={styles.textDesktopHeading}>Generative Emoji</div>
                 </div>
-              );
-            })}
+
+                <div className={styles.textDesktopNavHighlight} />
+
+                <div className={styles.desktopChatIconWrap}>
+                  <img className={styles.desktopChatImage} src="/chat.png" alt="" />
+                </div>
+
+                <div className={styles.textDesktopChatButton}>채팅하기</div>
+
+                <div className={styles.desktopFolderIconWrap}>
+                  <img className={styles.desktopFolderImage} src="/fiile.png" alt="" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {showComposer ? (
-            <div className={styles.figComposer}>
-              <div className={draftSelectedTerm ? `${styles.composerPill} ${styles.composerPillActive}` : styles.composerPill}>
-                {draftSelectedTerm ? "제이모지 생성 시작" : "제이모지 생성"}
-              </div>
-              {draftGenerateStatus === "loading" ? (
-                <div className={styles.comfyHint} aria-live="polite">
-                  이미지 생성 중...
-                </div>
-              ) : null}
-              {draftGenerateStatus === "error" && draftGenerateError ? (
-                <div className={styles.comfyHintError} aria-live="polite">
-                  {draftGenerateError}
-                </div>
-              ) : null}
-              <form
-                className={styles.figComposerInner}
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  send();
-                }}
-              >
-                <div className={styles.inputWrap}>
-                  <div className={styles.draftPreviewRow} aria-label="이미지 생성 프리뷰">
-                    <button
-                      type="button"
-                      className={
-                        draftPreviewIndex === 0
-                          ? `${styles.draftPreviewBox} ${styles.draftPreviewSelected}`
-                          : styles.draftPreviewBox
-                      }
-                      style={{ background: draftPreviewColors?.[0] || "#D1D5DB" }}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setDraftPreviewIndex(0);
-                        completeDraftWithPreview(0);
-                      }}
-                      aria-label="프리뷰 1 선택"
-                    >
-                      {draftPreviewImages?.[0] ? <img className={styles.draftPreviewImg} src={draftPreviewImages[0]} alt="" /> : null}
-                      {draftGenerateStatus === "loading" ? <span className={styles.draftPreviewLoading} aria-hidden="true" /> : null}
-                    </button>
-                    <button
-                      type="button"
-                      className={
-                        draftPreviewIndex === 1
-                          ? `${styles.draftPreviewBox} ${styles.draftPreviewSelected}`
-                          : styles.draftPreviewBox
-                      }
-                      style={{ background: draftPreviewColors?.[1] || "#E5E7EB" }}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setDraftPreviewIndex(1);
-                        completeDraftWithPreview(1);
-                      }}
-                      aria-label="프리뷰 2 선택"
-                    >
-                      {draftPreviewImages?.[1] ? <img className={styles.draftPreviewImg} src={draftPreviewImages[1]} alt="" /> : null}
-                      {draftGenerateStatus === "loading" ? <span className={styles.draftPreviewLoading} aria-hidden="true" /> : null}
-                    </button>
-                  </div>
-                  <div
-                    className={styles.inputMirror}
-                    onMouseDown={(e) => {
-                      // 후보 클릭이 아닌 곳을 눌러도 입력에 포커스
-                      if (e.target.closest("button")) return;
-                      e.preventDefault();
-                      composerRef.current?.focus();
-                    }}
-                    aria-hidden="true"
-                  >
-                    <InputMirror
-                      text={input}
-                      candidates={liveCandidates}
-                      selected={draftSelectedTerm}
-                    />
-                  </div>
-                  <textarea
-                    ref={composerRef}
-                    className={styles.figTextarea}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onClick={(e) => {
-                      const el = e.currentTarget;
-                      const idx = el.selectionStart ?? 0;
-                      const term = findCandidateAtCaret(el.value, liveCandidates, idx);
-                      if (term) setDraftSelectedTerm(term);
-                    }}
-                    rows={2}
-                    spellCheck={false}
-                  />
-                </div>
-                <button className={styles.figSend} type="submit" disabled={!canSend} aria-label="전송">
-                  ↗
-                </button>
-              </form>
-            </div>
-          ) : null}
+          <div className={styles.chatPhoneViewport}>
+            <div className={styles.chatPhone}>
+            <div className={styles.phoneHiddenImage} aria-hidden="true" />
+            <img className={styles.chatStatusImage} src="/status.png" alt="" aria-hidden="true" />
 
-          {showComposer && (hasUserMessage || canSend) ? (
-            <button className={styles.nextAfterSend} type="button" onClick={goNext}>
-              다음
-            </button>
-          ) : null}
+              <div className={styles.chatPhoneInner}>
+              <div className={styles.chatTopHeader}>
+                <div className={styles.chatHeaderBack}>
+                  <BackArrowIcon />
+                </div>
+                <div className={styles.chatHeaderCenter}>
+                  <div className={styles.chatHeaderTitle}>Group chat</div>
+                  <div className={styles.chatHeaderMembers}>Luna, Sol, {nickname || "Seung"}</div>
+                </div>
+              </div>
+
+              <div ref={listRef} className={styles.chatStream} aria-label="채팅">
+                {timeline.slice(0, revealedCount).map((m) => {
+                  if (m.type === "system") {
+                    return (
+                      <div key={m.id} className={styles.chatSystem}>
+                        {m.text}
+                      </div>
+                    );
+                  }
+
+                  if (m.type === "analysis") {
+                    const a = m.analysis || {};
+                    return (
+                      <div key={m.id} className={styles.analysisRow}>
+                        <div className={styles.analysisCard}>
+                          <div className={styles.analysisLine}>1. 캐릭터: {a.character || "-"}</div>
+                          <div className={styles.analysisLine}>
+                            2. 행동 및 감정: {a.action || "-"} / {a.emotion || "-"}
+                          </div>
+                          <div className={styles.analysisLine}>3. 외형 묘사 및 특징: {a.appearance || "-"}</div>
+                          <div className={styles.analysisLine}>
+                            4. 소품 및 특수 소품: {(a.props && a.props.length ? a.props.join(", ") : "-")}
+                          </div>
+                          <div className={styles.analysisLine}>5. 이미지 저장 이름: {a.saveName || "-"}</div>
+                          <div className={styles.analysisLine}>6. 이미지 생성 프롬프트: {a.imagePrompt || "-"}</div>
+                          <div className={styles.analysisLine}>
+                            7. 제목/표현어: {a.title || "-"} / {a.expressionWord || "-"}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (m.type === "image") {
+                    return (
+                      <div key={m.id} className={styles.introRow}>
+                        <div className={styles.introAvatar}>
+                          <img
+                            className={styles.introAvatarImg}
+                            src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
+                            alt=""
+                          />
+                        </div>
+                        <div className={styles.figImageCard}>
+                          <div className={styles.figImageLabel}>{m.label || "예시"}</div>
+                          <img className={styles.figImage} src={m.src} alt={m.label || ""} />
+                          {m.reaction ? <div className={styles.figReaction}>{m.reaction}</div> : null}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  if (m.type === "generatedImage") {
+                    const isSelected = Number(m.index) === Number(m.selectedIndex);
+                    return (
+                      <div key={m.id} className={styles.introRow}>
+                        <div className={styles.introAvatar}>
+                          <img className={styles.introAvatarImg} src={AVATAR_2} alt="" />
+                        </div>
+                        <div className={styles.figImageCard}>
+                          <div className={styles.figImageLabel}>{isSelected ? "선택된 이미지" : "생성 이미지"}</div>
+                          {m.src ? (
+                            <img
+                              className={isSelected ? `${styles.figImage} ${styles.figImageSelected}` : styles.figImage}
+                              src={m.src}
+                              alt={isSelected ? "선택된 생성 이미지" : "생성 이미지"}
+                            />
+                          ) : (
+                            <div
+                              className={isSelected ? `${styles.figColorPreview} ${styles.figColorPreviewSelected}` : styles.figColorPreview}
+                              style={{ background: m.color || "#D1D5DB" }}
+                              aria-label={isSelected ? "선택된 생성 이미지" : "생성 이미지"}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  const bubbleClass =
+                    m.variant === "userWhite"
+                      ? styles.userBubble
+                      : m.variant === "blue"
+                      ? styles.figBubbleBlue
+                      : m.variant === "yellowPink"
+                        ? styles.figBubbleYellowPink
+                        : styles.figBubbleYellow;
+                  const senderName =
+                    m.variant === "blue"
+                      ? "Sol"
+                      : m.variant === "userWhite"
+                        ? ""
+                        : "Luna";
+
+                  return (
+                    <div key={m.id} className={styles.introRow}>
+                      <div className={styles.introAvatar}>
+                        {m.role === "user" ? (
+                          <div className={styles.userAvatar} aria-hidden="true" />
+                        ) : (
+                          <img
+                            className={styles.introAvatarImg}
+                            src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
+                            alt=""
+                          />
+                        )}
+                      </div>
+                      <div className={styles.chatBubbleGroup}>
+                        {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
+                        <div className={bubbleClass}>
+                          <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {showComposer ? (
+                <div className={styles.figComposer}>
+                  <div className={draftSelectedTerm ? `${styles.composerPill} ${styles.composerPillActive}` : styles.composerPill}>
+                    {draftSelectedTerm ? "제이모지 생성 시작" : "제이모지 생성"}
+                  </div>
+                  {draftGenerateStatus === "loading" ? (
+                    <div className={styles.comfyHint} aria-live="polite">
+                      이미지 생성 중...
+                    </div>
+                  ) : null}
+                  {draftGenerateStatus === "error" && draftGenerateError ? (
+                    <div className={styles.comfyHintError} aria-live="polite">
+                      {draftGenerateError}
+                    </div>
+                  ) : null}
+                  <form
+                    className={styles.figComposerInner}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      send();
+                    }}
+                  >
+                    <div className={styles.inputWrap}>
+                      <div className={styles.draftPreviewRow} aria-label="이미지 생성 프리뷰">
+                        <button
+                          type="button"
+                          className={
+                            draftPreviewIndex === 0
+                              ? `${styles.draftPreviewBox} ${styles.draftPreviewSelected}`
+                              : styles.draftPreviewBox
+                          }
+                          style={{ background: draftPreviewColors?.[0] || "#D1D5DB" }}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setDraftPreviewIndex(0);
+                            completeDraftWithPreview(0);
+                          }}
+                          aria-label="프리뷰 1 선택"
+                        >
+                          {draftPreviewImages?.[0] ? <img className={styles.draftPreviewImg} src={draftPreviewImages[0]} alt="" /> : null}
+                          {draftGenerateStatus === "loading" ? <span className={styles.draftPreviewLoading} aria-hidden="true" /> : null}
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            draftPreviewIndex === 1
+                              ? `${styles.draftPreviewBox} ${styles.draftPreviewSelected}`
+                              : styles.draftPreviewBox
+                          }
+                          style={{ background: draftPreviewColors?.[1] || "#E5E7EB" }}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            setDraftPreviewIndex(1);
+                            completeDraftWithPreview(1);
+                          }}
+                          aria-label="프리뷰 2 선택"
+                        >
+                          {draftPreviewImages?.[1] ? <img className={styles.draftPreviewImg} src={draftPreviewImages[1]} alt="" /> : null}
+                          {draftGenerateStatus === "loading" ? <span className={styles.draftPreviewLoading} aria-hidden="true" /> : null}
+                        </button>
+                      </div>
+                      <div
+                        className={styles.inputMirror}
+                        onMouseDown={(e) => {
+                          if (e.target.closest("button")) return;
+                          e.preventDefault();
+                          composerRef.current?.focus();
+                        }}
+                        aria-hidden="true"
+                      >
+                        <InputMirror
+                          text={input}
+                          candidates={liveCandidates}
+                          selected={draftSelectedTerm}
+                        />
+                      </div>
+                      <textarea
+                        ref={composerRef}
+                        className={styles.figTextarea}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onClick={(e) => {
+                          const el = e.currentTarget;
+                          const idx = el.selectionStart ?? 0;
+                          const term = findCandidateAtCaret(el.value, liveCandidates, idx);
+                          if (term) setDraftSelectedTerm(term);
+                        }}
+                        rows={2}
+                        spellCheck={false}
+                      />
+                    </div>
+                    <button className={styles.figSend} type="submit" disabled={!canSend} aria-label="전송">
+                      ↗
+                    </button>
+                  </form>
+                </div>
+              ) : null}
+
+                {showComposer && (hasUserMessage || canSend) ? (
+                  <button className={styles.nextAfterSend} type="button" onClick={goNext}>
+                    다음
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </main>

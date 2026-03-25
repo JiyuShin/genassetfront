@@ -75,7 +75,7 @@
   right: 95.42%;
   top: 8.89%;
   bottom: 86.23%;
-  background: rgba(187, 255, 85, 0.5);
+  background: #fafafa;
   border-radius: 12px;
 }
 
@@ -113,6 +113,10 @@
   color: #fafafa;
   cursor: pointer;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .desktopFolderIconWrap {
@@ -318,6 +322,241 @@
   background: #b6c7ff;
 }
 
+.joinWireframePhone {
+  position: relative;
+  width: 402px;
+  height: 874px;
+  background: linear-gradient(169.08deg, #dcdcdc 0.82%, #fefefe 99.4%);
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: none;
+  display: grid;
+  place-items: center;
+}
+
+.joinStatusBar {
+  position: absolute;
+  width: 401px;
+  height: 59.2px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  background: url("/status.png") center / 401px 59.2px no-repeat;
+  isolation: isolate;
+  z-index: 2;
+}
+
+.joinStatusBar > * {
+  display: none;
+}
+
+.joinStatusTimeWrap {
+  margin: 0 auto;
+  width: 60.32px;
+  height: 23.46px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  z-index: 0;
+  position: relative;
+}
+
+.joinStatusTime {
+  position: absolute;
+  width: 60.32px;
+  height: 25px;
+  left: 0;
+  top: calc(50% - 25px / 2 + 0.49px);
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18.9889px;
+  line-height: 25px;
+  text-align: center;
+  letter-spacing: -0.455735px;
+  font-feature-settings: "case" on;
+  color: #000000;
+}
+
+.joinStatusIcons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0;
+  gap: 8.94px;
+  margin: 0 auto;
+  width: 88.83px;
+  height: 14.52px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  z-index: 1;
+}
+
+.joinCellular {
+  width: 21.45px;
+  height: 13.4px;
+  position: relative;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.joinCellularBarOne,
+.joinCellularBarTwo,
+.joinCellularBarThree,
+.joinCellularBarFour {
+  position: absolute;
+  bottom: 3.85%;
+  background: #000000;
+  border-radius: 1px;
+}
+
+.joinCellularBarOne {
+  left: 0%;
+  width: 8.02%;
+  top: 60.77%;
+}
+
+.joinCellularBarTwo {
+  left: 6.67%;
+  width: 4.02%;
+  top: 42.31%;
+}
+
+.joinCellularBarThree {
+  left: 13.46%;
+  width: 4.02%;
+  top: 22.3%;
+}
+
+.joinCellularBarFour {
+  left: 20.12%;
+  width: 4.03%;
+  top: 3.85%;
+}
+
+.joinWifi {
+  width: 18.99px;
+  height: 13.4px;
+  position: relative;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+.joinWifiArcOne,
+.joinWifiArcTwo,
+.joinWifiArcThree {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1.8px solid #000000;
+  border-top-left-radius: 999px;
+  border-top-right-radius: 999px;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.joinWifiArcOne {
+  width: 18px;
+  height: 8px;
+  top: 0;
+}
+
+.joinWifiArcTwo {
+  width: 10.5px;
+  height: 5px;
+  top: 4px;
+}
+
+.joinWifiArcThree {
+  width: 3px;
+  height: 1.5px;
+  top: 8.7px;
+  border-width: 3px;
+}
+
+.joinBattery {
+  width: 30.52px;
+  height: 14.52px;
+  position: relative;
+  flex: none;
+  order: 2;
+  flex-grow: 0;
+}
+
+.joinBatteryBorder {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28.49px;
+  height: 14.52px;
+  mix-blend-mode: normal;
+  opacity: 0.35;
+  border: 1.117px solid #000000;
+  border-radius: 3.90949px;
+}
+
+.joinBatteryCap {
+  position: absolute;
+  left: 30.01px;
+  top: 5.21px;
+  width: 0.51px;
+  height: 4.48px;
+  background: #000000;
+  mix-blend-mode: normal;
+  opacity: 0.4;
+}
+
+.joinBatteryCapacity {
+  position: absolute;
+  left: 3.25px;
+  top: 2.23px;
+  width: 19.94px;
+  height: 10.05px;
+  background: #000000;
+  border-radius: 1.48933px;
+}
+
+.joinFloatingIsland {
+  position: absolute;
+  display: none;
+  width: 141.86px;
+  height: 41.33px;
+  left: calc(50% - 141.86px / 2 + 1.06px);
+  top: calc(50% - 41.33px / 2 + 3.19px);
+  background: #000000;
+  border-radius: 20.6644px;
+  flex: none;
+  order: 2;
+  flex-grow: 0;
+  z-index: 2;
+}
+
+.phoneHiddenImage {
+  position: absolute;
+  visibility: hidden;
+  width: 407px;
+  height: 875px;
+  left: -2px;
+  top: 0;
+}
+
+.chatStatusImage {
+  position: absolute;
+  width: 401px;
+  height: 59.2px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  display: block;
+  object-fit: contain;
+  z-index: 2;
+}
+
 .onboardingCenter {
   display: grid;
   place-items: center;
@@ -421,8 +660,53 @@
   box-shadow: 0 12px 26px rgba(17, 24, 39, 0.1);
 }
 
-.introPhone,
+.chatPhoneViewport {
+  --chat-frame-scale: 0.8;
+  position: relative;
+  width: calc(402px * var(--chat-frame-scale));
+  height: calc(874px * var(--chat-frame-scale));
+  z-index: 1;
+}
+
+.chatStageBackground {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background: #ddffab;
+  display: grid;
+  place-items: center;
+}
+
+.chatStageDesktopLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.chatStageDivider {
+  position: absolute;
+  width: 1003px;
+  height: 0;
+  left: 96px;
+  top: 11px;
+  border: 1.5px solid #d9d9d9;
+  transform: rotate(90deg);
+  transform-origin: top left;
+}
+
 .chatPhone {
+  width: 402px;
+  height: 874px;
+  border-radius: 32px;
+  overflow: hidden;
+  background: linear-gradient(169.08deg, #dcdcdc 0.82%, #fefefe 99.4%);
+  box-shadow: none;
+  position: relative;
+  transform: scale(var(--chat-frame-scale));
+  transform-origin: top left;
+}
+
+.introPhone {
   width: min(320px, 100%);
   height: min(640px, calc(100vh - 56px));
   border-radius: 30px;
@@ -433,6 +717,13 @@
   padding: 18px 16px 20px;
 }
 
+.chatPhoneInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 120px 16px 20px;
+}
+
 .introDate,
 .chatDate {
   text-align: center;
@@ -440,6 +731,72 @@
   font-size: 12px;
   color: #111827;
   opacity: 0.85;
+}
+
+.chatTopHeader {
+  position: absolute;
+  top: 76px;
+  left: 0;
+  width: 100%;
+  height: 39px;
+}
+
+.chatHeaderBack {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 23px;
+  top: 8px;
+  color: #6f6f6f;
+}
+
+.chatHeaderBackIcon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.chatHeaderCenter {
+  position: absolute;
+  width: 91px;
+  height: 39px;
+  left: calc(50% - 91px / 2 + 0.5px);
+  top: 0;
+}
+
+.chatHeaderTitle {
+  position: absolute;
+  width: 86px;
+  height: 26px;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 150%;
+  text-align: center;
+  letter-spacing: -0.022em;
+  color: #000000;
+}
+
+.chatHeaderMembers {
+  position: absolute;
+  min-width: 91px;
+  height: 16px;
+  left: 50%;
+  top: 23px;
+  transform: translateX(-50%);
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 130%;
+  text-align: center;
+  letter-spacing: -0.022em;
+  color: #909090;
+  white-space: nowrap;
 }
 
 .introStream,
@@ -488,32 +845,53 @@
   object-fit: cover;
 }
 
+.chatBubbleGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.chatSenderName {
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 130%;
+  letter-spacing: -0.022em;
+  color: #909090;
+  padding-left: 2px;
+}
+
 .figBubbleYellow,
 .figBubbleBlue,
 .figBubbleYellowPink {
   max-width: 78%;
-  padding: 12px 14px;
-  border-radius: 18px;
-  border: 2.5px solid #b2d2e6;
-  line-height: 1.45;
-  font-size: 13px;
+  padding: 8.4px 12.2px;
+  border-radius: 10.8px;
+  border: 0;
+  background: #fafafa;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
   font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: -0.022em;
+  color: #000000;
   white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .figBubbleYellow {
-  background: #ffee90;
-  color: #111827;
+  background: #fafafa;
 }
 
 .figBubbleBlue {
-  background: #e0f3ff;
-  color: #111827;
+  background: #fafafa;
 }
 
 .figBubbleYellowPink {
-  background: #ffee90;
-  color: #111827;
+  background: #fafafa;
 }
 
 .inlineGradient {
@@ -634,15 +1012,19 @@
 
 .userBubble {
   max-width: 78%;
-  padding: 12px 14px;
-  border-radius: 18px;
-  border: 2.5px solid #b2d2e6;
-  line-height: 1.45;
-  font-size: 13px;
+  padding: 8.4px 12.2px;
+  border-radius: 10.8px;
+  border: 0;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
   font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: -0.022em;
   white-space: pre-wrap;
-  background: #ffffff;
-  color: #111827;
+  word-break: break-word;
+  background: #fafafa;
+  color: #000000;
 }
 
 .analysisRow {
