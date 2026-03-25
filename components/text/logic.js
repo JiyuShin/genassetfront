@@ -882,44 +882,38 @@ export function useTextLogic() {
     const selected = draftSelectedTerm;
     const previewIndex = Number.isFinite(opts.previewIndex) ? opts.previewIndex : draftPreviewIndex;
     const imagesSnapshot = Array.isArray(draftPreviewImages) ? draftPreviewImages.slice(0, 2) : [];
+    const fallbackSelected = liveCandidates?.[previewIndex] || liveCandidates?.[0] || text;
+    const selectedTerm = String(selected || fallbackSelected || "").trim();
+    const shouldAttachPreview = showComposer;
+    const appendedCount = shouldAttachPreview ? 3 : 1;
     setMessageInput("");
     setDraftSelectedTerm(null);
     setDraftPreviewIndex(0);
     setDraftPreviewImages([]);
     setDraftGenerateStatus("idle");
     setDraftGenerateError("");
+    setShowComposer(false);
     const candidates = extractCandidates(text);
     const msgId = id();
     setTimeline((prev) => {
-      const next = [...prev, { id: msgId, role: "user", type: "bubble", variant: "userWhite", text, candidates }];
-      if (selected && String(selected).trim()) {
-        const analysis = analyzeSelection(selected, text, nickname);
-        next.push({ id: id(), role: "bot", type: "analysis", variant: "analysisWhite", analysis });
-        const seed = `${nickname}|${text}|${selected}`;
+      const next = [...prev];
+      if (shouldAttachPreview) {
+        const seed = `${nickname}|${text}|${selectedTerm}`;
         const colors = [pickStableColor(`${seed}|0`), pickStableColor(`${seed}|1`)];
-        next.push(
-          {
-            id: id(),
-            role: "bot",
-            type: "generatedImage",
-            src: imagesSnapshot[0] || "",
-            color: colors[0],
-            index: 0,
-            selectedIndex: previewIndex
-          },
-          {
-            id: id(),
-            role: "bot",
-            type: "generatedImage",
-            src: imagesSnapshot[1] || "",
-            color: colors[1],
-            index: 1,
-            selectedIndex: previewIndex
-          }
-        );
+        next.push({
+          id: id(),
+          role: "user",
+          type: "generatedImage",
+          src: imagesSnapshot[previewIndex] || "",
+          color: colors[previewIndex] || colors[0],
+          index: previewIndex,
+          selectedIndex: previewIndex
+        });
       }
+      next.push({ id: msgId, role: "user", type: "bubble", variant: "userWhite", text, candidates });
       return next;
     });
+    setRevealedCount((prev) => Math.max(prev, timeline.length + appendedCount));
     if (!hasPickedCandidate && !guideMessageId && candidates.length) setGuideMessageId(msgId);
   };
 

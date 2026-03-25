@@ -325,16 +325,8 @@ function BubbleText({ message, onPick, guide }) {
     });
   }
 
-  if (message.role === "user" && message.candidates?.length) {
-    return (
-      <HighlightText
-        text={message.text}
-        candidates={message.candidates}
-        onPick={onPick}
-        guide={guide}
-        sourceMessageId={message.id}
-      />
-    );
+  if (message.role === "user") {
+    return <span className={styles.userBubbleText}>{message.text}</span>;
   }
 
   return message.text;
@@ -617,13 +609,14 @@ export default function TextPage() {
 
                   if (m.type === "generatedImage") {
                     const isSelected = Number(m.index) === Number(m.selectedIndex);
+                    if (!isSelected) return null;
                     return (
-                      <div key={m.id} className={styles.introRow}>
+                      <div key={m.id} className={`${styles.introRow} ${styles.introRowUser}`}>
                         <div className={styles.introAvatar}>
-                          <img className={styles.introAvatarImg} src={AVATAR_2} alt="" />
+                          <div className={styles.userAvatar} aria-hidden="true" />
                         </div>
-                        <div className={styles.figImageCard}>
-                          <div className={styles.figImageLabel}>{isSelected ? "선택된 이미지" : "생성 이미지"}</div>
+                        <div className={`${styles.figImageCard} ${styles.figImageCardUser}`}>
+                          <div className={styles.figImageLabel}>선택한 프리뷰</div>
                           {m.src ? (
                             <img
                               className={isSelected ? `${styles.figImage} ${styles.figImageSelected}` : styles.figImage}
@@ -659,10 +652,13 @@ export default function TextPage() {
 
                   const showSuggestionHint =
                     String(m.text || "").startsWith(`오 ${nickname || "00"}이 왔구나! 하이~`);
+                  const rowClass = m.role === "user" ? `${styles.introRow} ${styles.introRowUser}` : styles.introRow;
+                  const bubbleGroupClass =
+                    m.role === "user" ? `${styles.chatBubbleGroup} ${styles.chatBubbleGroupUser}` : styles.chatBubbleGroup;
 
                   return (
                     <div key={m.id} className={styles.chatMessageBlock}>
-                      <div className={styles.introRow}>
+                      <div className={rowClass}>
                         <div className={styles.introAvatar}>
                           {m.role === "user" ? (
                             <div className={styles.userAvatar} aria-hidden="true" />
@@ -674,7 +670,7 @@ export default function TextPage() {
                             />
                           )}
                         </div>
-                        <div className={styles.chatBubbleGroup}>
+                        <div className={bubbleGroupClass}>
                           {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
                           <div className={bubbleClass}>
                             <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
@@ -702,7 +698,7 @@ export default function TextPage() {
                 })}
               </div>
 
-              {!showComposer && hasJoinSystemVisible ? (
+              {hasJoinSystemVisible ? (
                 <div className={styles.chatInitialComposer}>
                   <div
                     className={
@@ -719,12 +715,13 @@ export default function TextPage() {
                     <div className={styles.chatInitialInputMirror} aria-hidden="true">
                       <InputMirror text={input} candidates={liveCandidates} selected={null} highlightMode="bold" />
                     </div>
+                    {!input.trim() ? <span className={styles.chatInitialPlaceholder}>메시지 입력</span> : null}
                     <textarea
                       ref={initialComposerRef}
                       className={styles.chatInitialTextarea}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder="|메시지 입력"
+                      placeholder="메시지 입력"
                       rows={1}
                       spellCheck={false}
                       aria-label="메시지 입력"
@@ -742,6 +739,10 @@ export default function TextPage() {
                     className={styles.chatInitialMicBtn}
                     type="button"
                     aria-label={input.trim() ? "전송" : "음성 입력"}
+                    onClick={() => {
+                      if (!input.trim()) return;
+                      send();
+                    }}
                   >
                     {input.trim() ? <SendIcon /> : <MicIcon />}
                   </button>
@@ -752,7 +753,7 @@ export default function TextPage() {
                 <div
                   className={styles.figComposer}
                   style={{
-                    width: `${input.trim() ? 335 : 282}px`,
+                    width: "338px",
                     ["--composer-seed-height"]: `${initialComposerHeight}px`
                   }}
                 >
@@ -789,7 +790,6 @@ export default function TextPage() {
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             setDraftPreviewIndex(0);
-                            completeDraftWithPreview(0);
                           }}
                           aria-label="프리뷰 1 선택"
                         >
@@ -807,7 +807,6 @@ export default function TextPage() {
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => {
                             setDraftPreviewIndex(1);
-                            completeDraftWithPreview(1);
                           }}
                           aria-label="프리뷰 2 선택"
                         >
