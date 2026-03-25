@@ -50,6 +50,93 @@ function BackArrowIcon() {
   );
 }
 
+function MicIcon() {
+  return (
+    <svg viewBox="0 0 34 34" className={styles.chatMicIcon} aria-hidden="true">
+      <path
+        d="M17 4.8a4.1 4.1 0 0 1 4.1 4.1v7.9a4.1 4.1 0 1 1-8.2 0V8.9A4.1 4.1 0 0 1 17 4.8Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.4 16.9a7.6 7.6 0 0 0 15.2 0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17 24.5v5.1"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13.1 29.6h7.8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ChatInputSmileIcon() {
+  return (
+    <svg viewBox="0 0 30 30" className={styles.chatInputSmileIcon} aria-hidden="true">
+      <circle
+        cx="15"
+        cy="15"
+        r="10.8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+      />
+      <path
+        d="M11.4 11.7h.01"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18.6 11.7h.01"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11.2 18c1.05 1.35 2.35 2.02 3.8 2.02 1.45 0 2.75-.67 3.8-2.02"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20.2 7.7v4.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.9 10h4.6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.54174"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -133,7 +220,7 @@ function HighlightText({ text, candidates, onPick, guide, sourceMessageId }) {
   });
 }
 
-function InputMirror({ text, candidates, selected }) {
+function InputMirror({ text, candidates, selected, highlightMode = "gradient" }) {
   const value = String(text || "");
   const list = (candidates || []).filter(Boolean);
   if (!value) return <span className={styles.inputMirrorText}>{value}</span>;
@@ -162,6 +249,13 @@ function InputMirror({ text, candidates, selected }) {
       );
     }
     const isSelected = canonical === selected;
+    if (highlightMode === "bold") {
+      return (
+        <span key={idx} className={styles.initialDraftCandidate}>
+          {p}
+        </span>
+      );
+    }
     return (
       <span key={idx} className={isSelected ? `${styles.draftCandidate} ${styles.draftCandidateSelected}` : styles.draftCandidate}>
         <GradientText
@@ -260,6 +354,9 @@ export default function TextPage() {
   } = useTextLogic();
   const nicknameRef = useRef(null);
   const composerRef = useRef(null);
+  const hasJoinSystemVisible = timeline
+    .slice(0, revealedCount)
+    .some((m) => m.type === "system" && String(m.text || "").includes("채팅에 참여했어요!"));
 
   return (
     <main className={styles.page}>
@@ -548,6 +645,26 @@ export default function TextPage() {
                   );
                 })}
               </div>
+
+              {!showComposer && hasJoinSystemVisible ? (
+                <div className={styles.chatInitialComposer}>
+                  <div className={styles.chatInitialInputWrap}>
+                    <input
+                      className={styles.chatInitialInput}
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="|메시지 입력"
+                      aria-label="메시지 입력"
+                    />
+                  </div>
+                  <button className={styles.chatInitialSmileBtn} type="button" aria-label="이모지 생성">
+                    <ChatInputSmileIcon />
+                  </button>
+                  <button className={styles.chatInitialMicBtn} type="button" aria-label="음성 입력">
+                    <MicIcon />
+                  </button>
+                </div>
+              ) : null}
 
               {showComposer ? (
                 <div className={styles.figComposer}>

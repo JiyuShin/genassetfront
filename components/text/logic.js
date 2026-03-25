@@ -982,7 +982,6 @@ export function useTextLogic() {
           if (next >= items.length) {
             window.clearInterval(introTimerRef.current);
             introTimerRef.current = null;
-            window.setTimeout(() => setShowComposer(true), 650);
             return items.length;
           }
           return next;
@@ -1009,6 +1008,7 @@ export function useTextLogic() {
 
     input: messageInput,
     setInput: setMessageInput,
+    startComposer: () => setShowComposer(true),
     listRef,
     canSend,
     send,
