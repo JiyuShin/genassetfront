@@ -237,7 +237,7 @@ function HighlightText({ text, candidates, onPick, guide, sourceMessageId }) {
   });
 }
 
-function InputMirror({ text, candidates, selected, highlightMode = "gradient" }) {
+function InputMirror({ text, candidates, selected, highlightMode = "gradient", onPick }) {
   const value = String(text || "");
   const list = (candidates || []).filter(Boolean);
   if (!value) return <span className={styles.inputMirrorText}>{value}</span>;
@@ -254,6 +254,65 @@ function InputMirror({ text, candidates, selected, highlightMode = "gradient" })
   const re = new RegExp(`(${pattern})`, "g");
   const parts = value.split(re);
 
+  if (highlightMode === "bold") {
+    const nodes = [];
+    for (let idx = 0; idx < parts.length; idx += 1) {
+      const part = parts[idx];
+      const key = normalizeSpace(part);
+      const canonical = normalizedMap.get(key);
+      const hit = Boolean(canonical);
+
+      if (!hit) {
+        nodes.push(
+          <span key={idx} className={styles.inputMirrorText}>
+            {part}
+          </span>
+        );
+        continue;
+      }
+
+      let combined = part;
+      let lookahead = idx;
+      let pickTerm = canonical;
+      while (lookahead + 2 < parts.length) {
+        const spacer = parts[lookahead + 1];
+        const nextPart = parts[lookahead + 2];
+        const nextKey = normalizeSpace(nextPart);
+        const nextCanonical = normalizedMap.get(nextKey);
+        if (!/^\s+$/.test(spacer || "") || !nextCanonical) break;
+        combined += spacer + nextPart;
+        lookahead += 2;
+      }
+
+      nodes.push(
+        onPick ? (
+          <button
+            key={idx}
+            type="button"
+            className={styles.chatInitialHighlightBtn}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onPick(pickTerm);
+            }}
+          >
+            <span className={styles.initialDraftCandidate}>{combined}</span>
+          </button>
+        ) : (
+          <span key={idx} className={styles.initialDraftCandidate}>
+            {combined}
+          </span>
+        )
+      );
+      idx = lookahead;
+    }
+    return nodes;
+  }
+
   return parts.map((p, idx) => {
     const key = normalizeSpace(p);
     const canonical = normalizedMap.get(key);
@@ -266,13 +325,6 @@ function InputMirror({ text, candidates, selected, highlightMode = "gradient" })
       );
     }
     const isSelected = canonical === selected;
-    if (highlightMode === "bold") {
-      return (
-        <span key={idx} className={styles.initialDraftCandidate}>
-          {p}
-        </span>
-      );
-    }
     return (
       <span key={idx} className={isSelected ? `${styles.draftCandidate} ${styles.draftCandidateSelected}` : styles.draftCandidate}>
         <GradientText
@@ -383,6 +435,18 @@ export default function TextPage() {
     .some((m) => m.type === "system" && String(m.text || "").includes("채팅에 참여했어요!"));
   const handleOpenGenEmoji = () => {
     if (!input.trim() || liveCandidates.length === 0) return;
+    startComposer();
+    window.setTimeout(() => {
+      composerRef.current?.focus();
+    }, 0);
+  };
+  const handlePickLiveCandidate = (term) => {
+    if (!input.trim() || liveCandidates.length === 0) return;
+    dismissSuggestionHint();
+    setActionHintDismissing(false);
+    setActionHintHidden(true);
+    setActionHintVisible(false);
+    setDraftSelectedTerm(term);
     startComposer();
     window.setTimeout(() => {
       composerRef.current?.focus();
@@ -762,7 +826,7 @@ export default function TextPage() {
                               }
                             >
                               <div className={styles.chatActionHintCard}>
-                                얼굴 아이콘을 눌러 젠 이모지 생성을시작해보세요!
+                                하이라이트를 클릭하여 이모지 생성을 시작해보세요!
                               </div>
                             </div>
                           ) : null}
@@ -790,7 +854,13 @@ export default function TextPage() {
                     }}
                   >
                     <div className={styles.chatInitialInputMirror} aria-hidden="true">
-                      <InputMirror text={input} candidates={liveCandidates} selected={null} highlightMode="bold" />
+                      <InputMirror
+                        text={input}
+                        candidates={liveCandidates}
+                        selected={null}
+                        highlightMode="bold"
+                        onPick={handlePickLiveCandidate}
+                      />
                     </div>
                     {!input.trim() ? <span className={styles.chatInitialPlaceholder}>메시지 입력</span> : null}
                     <textarea

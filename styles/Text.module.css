@@ -999,17 +999,7 @@
 }
 
 .figImageLabel {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  height: 28px;
-  padding: 0 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  display: grid;
-  place-items: center;
-  font-weight: 400;
-  font-size: 12px;
+  display: none;
 }
 
 .figImage {
@@ -1405,7 +1395,7 @@
 .chatInitialInputMirror {
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 2;
   display: flex;
   align-items: flex-start;
   padding: 12px 18px;
@@ -1419,9 +1409,33 @@
   color: #6f6f6f;
 }
 
+.chatInitialHighlightBtn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
 .chatInitialInputMirror .initialDraftCandidate {
+  display: inline;
   font-weight: 700;
   color: #6f6f6f;
+  padding: 0 2px;
+  border-radius: 4px;
+  background-image: linear-gradient(
+    91.44deg,
+    rgba(208, 217, 253, 0.5) 0%,
+    rgba(208, 220, 244, 0.58) 26.44%,
+    rgba(203, 242, 167, 0.72) 63.46%,
+    rgba(201, 255, 120, 1) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 0.9em;
+  background-position: 0 88%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .chatInitialSmileBtn,
