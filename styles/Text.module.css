@@ -18,6 +18,17 @@
   overflow: hidden;
 }
 
+.textDesktopDivider {
+  position: absolute;
+  width: calc(100vh - 32px);
+  height: 0;
+  left: 81px;
+  top: 16px;
+  border: 1px solid #d9d9d9;
+  transform: rotate(90deg);
+  transform-origin: top left;
+}
+
 .textDesktopCanvas {
   position: absolute;
   width: 1440px;
@@ -31,6 +42,10 @@
   position: absolute;
   inset: 0;
   transform: translate(-25px, 80px);
+}
+
+.textDesktopUiNicknameShift {
+  transform: translate(-35px, 80px);
 }
 
 .textDesktopBrand {
@@ -52,6 +67,10 @@
   text-align: center;
   letter-spacing: -0.022em;
   color: #6f6f6f;
+}
+
+.textDesktopHeadingNicknameShift {
+  margin-left: -4px;
 }
 
 .desktopSmileIconWrap {
@@ -685,11 +704,11 @@
 
 .chatStageDivider {
   position: absolute;
-  width: 1003px;
+  width: calc(100vh - 32px);
   height: 0;
-  left: 96px;
-  top: 11px;
-  border: 1.5px solid #d9d9d9;
+  left: 81px;
+  top: 16px;
+  border: 1px solid #d9d9d9;
   transform: rotate(90deg);
   transform-origin: top left;
 }
@@ -909,6 +928,19 @@
   background: #fafafa;
 }
 
+.figBubbleSingleLine {
+  max-width: none;
+  white-space: nowrap;
+}
+
+.figBubbleManualBreak {
+  display: inline-block;
+  width: max-content;
+  max-width: none;
+  white-space: pre;
+  word-break: normal;
+}
+
 .inlineGradient {
   display: inline;
   line-height: inherit;
@@ -919,11 +951,11 @@
   width: min(230px, 78%);
   aspect-ratio: 1 / 0.9;
   border-radius: 18px;
-  border: 2.5px solid #111827;
+  border: 0;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.45);
   box-shadow: 0 16px 34px rgba(17, 24, 39, 0.14);
-  animation: floatCard 3.2s ease-in-out infinite;
+  animation: none;
 }
 
 .figImageCardUser {
@@ -1005,12 +1037,20 @@
   animation: suggestionFadeIn 0.45s ease 2s forwards, suggestionFadeOut 0.45s ease 7s forwards;
 }
 
+.chatSuggestionHintWrapDismissed {
+  animation: suggestionFadeOut 0.35s ease forwards !important;
+}
+
 .chatActionHintWrap {
   display: flex;
   justify-content: center;
   padding-top: 12px;
   opacity: 0;
-  animation: suggestionFadeIn 0.45s ease forwards, suggestionFadeOut 0.45s ease 12s forwards;
+  animation: suggestionFadeIn 0.45s ease forwards;
+}
+
+.chatActionHintWrapDismissed {
+  animation: suggestionFadeOut 0.35s ease forwards !important;
 }
 
 .chatSuggestionHintCard {

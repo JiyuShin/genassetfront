@@ -818,15 +818,15 @@ export function useTextLogic() {
         type: "bubble",
         speaker: "B",
         variant: "blue",
-        text: "하이~ 나 오늘 엄마 아빠랑 도쿄에\n유명한 불꽃축제 보고왔어. 완전 대박"
+        text: "하이~ 나 오늘 엄마 아빠랑 도쿄에\n유명한 불꽃축제 보고왔어. 완전 대박."
       },
       {
         type: "bubble",
         speaker: "A",
         variant: "yellowPink",
         parts: [
-          { text: "헐 나도 도쿄에 불꽃축제 너무 가고싶어 ㅠ\n", tone: "pinkGlow" },
-          { text: "거기 유명한 녹차 당고도 먹었겠네?" }
+          { text: "헐 나도 도쿄에 불꽃축제 너무 가고싶어 ㅠ", tone: "pinkGlow" },
+          { text: "\n거기 유명한 녹차 당고도 먹었겠네?" }
         ]
       },
       {
@@ -858,7 +858,13 @@ export function useTextLogic() {
         type: "bubble",
         speaker: "A",
         variant: "yellow",
-        text: `오 ${nickname || "00"}이 왔구나! 하이~\nB는 오늘 도쿄에서 완전 재밌었대\n넌 뭐했어??`
+        text: `오 ${nickname || "00"}이 왔구나 하이~\nB는 오늘 도쿄에서 완전 재밌었대!`
+      },
+      {
+        type: "bubble",
+        speaker: "A",
+        variant: "yellow",
+        text: "넌 뭐했어?"
       }
     ],
     [nickname]

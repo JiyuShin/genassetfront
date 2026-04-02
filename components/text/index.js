@@ -366,6 +366,11 @@ export default function TextPage() {
   const composerRef = useRef(null);
   const initialComposerRef = useRef(null);
   const [initialComposerHeight, setInitialComposerHeight] = useState(47);
+  const [suggestionHintDismissing, setSuggestionHintDismissing] = useState(false);
+  const [suggestionHintHidden, setSuggestionHintHidden] = useState(false);
+  const [actionHintVisible, setActionHintVisible] = useState(false);
+  const [actionHintDismissing, setActionHintDismissing] = useState(false);
+  const [actionHintHidden, setActionHintHidden] = useState(true);
   const hasJoinSystemVisible = timeline
     .slice(0, revealedCount)
     .some((m) => m.type === "system" && String(m.text || "").includes("채팅에 참여했어요!"));
@@ -385,17 +390,54 @@ export default function TextPage() {
     setInitialComposerHeight(nextHeight);
   }, [input, showComposer, hasJoinSystemVisible]);
 
+  useEffect(() => {
+    if (!suggestionHintDismissing) return undefined;
+    const timer = window.setTimeout(() => {
+      setSuggestionHintHidden(true);
+    }, 380);
+    return () => window.clearTimeout(timer);
+  }, [suggestionHintDismissing]);
+
+  useEffect(() => {
+    if (!actionHintVisible || actionHintDismissing || actionHintHidden) return undefined;
+    const timer = window.setTimeout(() => {
+      setActionHintDismissing(true);
+    }, 5000);
+    return () => window.clearTimeout(timer);
+  }, [actionHintVisible, actionHintDismissing, actionHintHidden]);
+
+  useEffect(() => {
+    if (!actionHintDismissing) return undefined;
+    const timer = window.setTimeout(() => {
+      setActionHintHidden(true);
+      setActionHintVisible(false);
+    }, 380);
+    return () => window.clearTimeout(timer);
+  }, [actionHintDismissing]);
+
+  const dismissSuggestionHint = () => {
+    if (suggestionHintHidden || suggestionHintDismissing) return;
+    setSuggestionHintDismissing(true);
+  };
+
+  const showActionHint = () => {
+    setActionHintVisible(true);
+    setActionHintHidden(false);
+    setActionHintDismissing(false);
+  };
+
   return (
     <main className={styles.page}>
       {step === "nickname" ? (
         <div className={styles.textDesktopFrame}>
+          <div className={styles.textDesktopDivider} aria-hidden="true" />
           <div className={styles.textDesktopCanvas}>
-            <div className={styles.textDesktopUi}>
+            <div className={`${styles.textDesktopUi} ${styles.textDesktopUiNicknameShift}`}>
               <div className={styles.textDesktopBrand}>
                 <div className={styles.desktopSmileIconWrap}>
                   <SmilePlusIcon />
                 </div>
-                <div className={styles.textDesktopHeading}>Generative Emoji</div>
+                <div className={`${styles.textDesktopHeading} ${styles.textDesktopHeadingNicknameShift}`}>Generative Emoji</div>
               </div>
 
               <div className={styles.textDesktopNavHighlight} aria-hidden="true" />
@@ -516,12 +558,12 @@ export default function TextPage() {
           <div className={styles.chatStageDivider} aria-hidden="true" />
           <div className={styles.chatStageDesktopLayer} aria-hidden="true">
             <div className={styles.textDesktopCanvas}>
-              <div className={styles.textDesktopUi}>
+              <div className={`${styles.textDesktopUi} ${styles.textDesktopUiNicknameShift}`}>
                 <div className={styles.textDesktopBrand}>
                   <div className={styles.desktopSmileIconWrap}>
                     <SmilePlusIcon />
                   </div>
-                  <div className={styles.textDesktopHeading}>Generative Emoji</div>
+                  <div className={`${styles.textDesktopHeading} ${styles.textDesktopHeadingNicknameShift}`}>Generative Emoji</div>
                 </div>
 
                 <div className={styles.textDesktopNavHighlight} />
@@ -651,7 +693,14 @@ export default function TextPage() {
                         : "Luna";
 
                   const showSuggestionHint =
-                    String(m.text || "").startsWith(`오 ${nickname || "00"}이 왔구나! 하이~`);
+                    String(m.text || "").startsWith(`오 ${nickname || "00"}이 왔구나 하이~`);
+                  const isSingleLineIntroBubble = String(m.text || "") === "B야 너 오늘 뭐했어? 심심해 죽겠다";
+                  const isManualBreakBubble =
+                    String(m.text || "") === "하이~ 나 오늘 엄마 아빠랑 도쿄에\n유명한 불꽃축제 보고왔어. 완전 대박." ||
+                    String(m.text || "") === `오 ${nickname || "00"}이 왔구나 하이~\nB는 오늘 도쿄에서 완전 재밌었대!` ||
+                    (Array.isArray(m.parts) &&
+                      String(m.parts?.[0]?.text || "") === "헐 나도 도쿄에 불꽃축제 너무 가고싶어 ㅠ" &&
+                      String(m.parts?.[1]?.text || "") === "\n거기 유명한 녹차 당고도 먹었겠네?");
                   const rowClass = m.role === "user" ? `${styles.introRow} ${styles.introRowUser}` : styles.introRow;
                   const bubbleGroupClass =
                     m.role === "user" ? `${styles.chatBubbleGroup} ${styles.chatBubbleGroupUser}` : styles.chatBubbleGroup;
@@ -672,20 +721,42 @@ export default function TextPage() {
                         </div>
                         <div className={bubbleGroupClass}>
                           {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
-                          <div className={bubbleClass}>
+                          <div
+                            className={
+                              isSingleLineIntroBubble
+                                ? `${bubbleClass} ${styles.figBubbleSingleLine}`
+                                : isManualBreakBubble
+                                  ? `${bubbleClass} ${styles.figBubbleManualBreak}`
+                                  : bubbleClass
+                            }
+                          >
                             <BubbleText message={m} onPick={selectCandidate} guide={m.id === guideMessageId} />
                           </div>
                         </div>
                       </div>
                       {showSuggestionHint ? (
                         <>
-                          <div className={styles.chatSuggestionHintWrap}>
-                            <div className={styles.chatSuggestionHintCard}>
-                              대화 속 감정이 포착되면 이모지 생성 제안이 나타나요!
+                          {!suggestionHintHidden ? (
+                            <div
+                              className={
+                                suggestionHintDismissing
+                                  ? `${styles.chatSuggestionHintWrap} ${styles.chatSuggestionHintWrapDismissed}`
+                                  : styles.chatSuggestionHintWrap
+                              }
+                            >
+                              <div className={styles.chatSuggestionHintCard}>
+                                대화 속 감정이 포착되면 이모지 생성 제안이 나타나요!
+                              </div>
                             </div>
-                          </div>
-                          {input.trim() ? (
-                            <div className={styles.chatActionHintWrap}>
+                          ) : null}
+                          {actionHintVisible && !actionHintHidden ? (
+                            <div
+                              className={
+                                actionHintDismissing
+                                  ? `${styles.chatActionHintWrap} ${styles.chatActionHintWrapDismissed}`
+                                  : styles.chatActionHintWrap
+                              }
+                            >
                               <div className={styles.chatActionHintCard}>
                                 얼굴 아이콘을 눌러 젠 이모지 생성을시작해보세요!
                               </div>
@@ -709,6 +780,8 @@ export default function TextPage() {
                     style={{ height: `${initialComposerHeight}px` }}
                     onMouseDown={(e) => {
                       e.preventDefault();
+                      dismissSuggestionHint();
+                      showActionHint();
                       initialComposerRef.current?.focus();
                     }}
                   >
@@ -721,6 +794,10 @@ export default function TextPage() {
                       className={styles.chatInitialTextarea}
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
+                      onFocus={() => {
+                        dismissSuggestionHint();
+                        showActionHint();
+                      }}
                       placeholder="메시지 입력"
                       rows={1}
                       spellCheck={false}
