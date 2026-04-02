@@ -326,6 +326,13 @@ function BubbleText({ message, onPick, guide }) {
   }
 
   if (message.role === "user") {
+    if (Array.isArray(message.candidates) && message.candidates.length > 0) {
+      return (
+        <span className={styles.userBubbleText}>
+          <InputMirror text={message.text} candidates={message.candidates} selected={null} highlightMode="bold" />
+        </span>
+      );
+    }
     return <span className={styles.userBubbleText}>{message.text}</span>;
   }
 
@@ -417,7 +424,8 @@ export default function TextPage() {
 
   const dismissSuggestionHint = () => {
     if (suggestionHintHidden || suggestionHintDismissing) return;
-    setSuggestionHintDismissing(true);
+    setSuggestionHintDismissing(false);
+    setSuggestionHintHidden(true);
   };
 
   const showActionHint = () => {
@@ -653,10 +661,7 @@ export default function TextPage() {
                     const isSelected = Number(m.index) === Number(m.selectedIndex);
                     if (!isSelected) return null;
                     return (
-                      <div key={m.id} className={`${styles.introRow} ${styles.introRowUser}`}>
-                        <div className={styles.introAvatar}>
-                          <div className={styles.userAvatar} aria-hidden="true" />
-                        </div>
+                      <div key={m.id} className={`${styles.introRow} ${styles.introRowUser} ${styles.generatedPreviewRow}`}>
                         <div className={`${styles.figImageCard} ${styles.figImageCardUser}`}>
                           <div className={styles.figImageLabel}>선택한 프리뷰</div>
                           {m.src ? (
@@ -668,7 +673,7 @@ export default function TextPage() {
                           ) : (
                             <div
                               className={isSelected ? `${styles.figColorPreview} ${styles.figColorPreviewSelected}` : styles.figColorPreview}
-                              style={{ background: m.color || "#D1D5DB" }}
+                              style={{ background: "#B4C3FF" }}
                               aria-label={isSelected ? "선택된 생성 이미지" : "생성 이미지"}
                             />
                           )}
@@ -709,17 +714,15 @@ export default function TextPage() {
                   return (
                     <div key={m.id} className={styles.chatMessageBlock}>
                       <div className={rowClass}>
-                        <div className={styles.introAvatar}>
-                          {m.role === "user" ? (
-                            <div className={styles.userAvatar} aria-hidden="true" />
-                          ) : (
+                        {m.role === "user" ? null : (
+                          <div className={styles.introAvatar}>
                             <img
                               className={styles.introAvatarImg}
                               src={m.speaker === "B" ? AVATAR_1 : AVATAR_2}
                               alt=""
                             />
-                          )}
-                        </div>
+                          </div>
+                        )}
                         <div className={bubbleGroupClass}>
                           {senderName ? <div className={styles.chatSenderName}>{senderName}</div> : null}
                           <div

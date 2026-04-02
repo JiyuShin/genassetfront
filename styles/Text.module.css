@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inclusive+Sans:opsz@8..144&family=Inter:wght@400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inclusive+Sans:opsz@8..144&family=Inter:wght@400;700&display=swap");
 
 .page {
   min-height: 100vh;
@@ -960,15 +960,19 @@
 
 .figImageCardUser {
   margin-left: auto;
-  width: 155px;
-  height: 164px;
-  aspect-ratio: auto;
-  padding-top: 5px;
+  width: min(230px, 78%);
+  height: auto;
+  aspect-ratio: 1 / 0.9;
+  padding-top: 0;
   background: #b4c3ff;
-  border-radius: 10.8px;
+  border-radius: 18px;
   border: 0;
   box-shadow: none;
   animation: none;
+}
+
+.generatedPreviewRow {
+  margin-top: 8px;
 }
 
 .figImageCardUser .figImageLabel {
@@ -976,14 +980,14 @@
 }
 
 .figImageCardUser .figImage {
-  width: 155px;
-  height: 155px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 .figImageCardUser .figColorPreview {
-  width: 155px;
-  height: 155px;
+  width: 100%;
+  height: 100%;
   border: 0;
   border-radius: 0;
 }
@@ -1186,39 +1190,51 @@
 }
 
 .userBubble {
-  width: min(201px, 100%);
-  min-height: 61px;
-  padding: 10px 11px 9px;
+  width: fit-content;
+  max-width: min(285px, 78%);
+  min-height: 0;
+  padding: 8.4px 12.2px;
   border-radius: 10.8px;
   border: 0;
   font-family: "Inter", sans-serif;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 16px;
   line-height: 130%;
   letter-spacing: -0.022em;
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
   background: #b4c3ff;
-  color: transparent;
+  color: #000000;
 }
 
 .userBubbleText {
   display: block;
-  width: 100%;
+  width: auto;
   font-family: "Inter", sans-serif;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 16px;
   line-height: 130%;
   letter-spacing: -0.022em;
   white-space: pre-wrap;
-  word-break: break-word;
-  background: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: #000000;
+  color: #000000;
+}
+
+.userBubble .inputMirrorText {
+  color: #000000;
+}
+
+.userBubble .initialDraftCandidate {
+  font-weight: 700;
+  color: #000000;
 }
 
 .analysisRow {
