@@ -692,9 +692,10 @@ export default function TextPage() {
                         ? ""
                         : "Luna";
 
-                  const showSuggestionHint =
-                    String(m.text || "").startsWith(`오 ${nickname || "00"}이 왔구나 하이~`);
-                  const isSingleLineIntroBubble = String(m.text || "") === "B야 너 오늘 뭐했어? 심심해 죽겠다";
+                  const showSuggestionHint = String(m.text || "") === "넌 뭐했어?";
+                  const isSingleLineIntroBubble =
+                    String(m.text || "") === "B야 너 오늘 뭐했어? 심심해 죽겠다" ||
+                    String(m.text || "") === "넌 뭐했어?";
                   const isManualBreakBubble =
                     String(m.text || "") === "하이~ 나 오늘 엄마 아빠랑 도쿄에\n유명한 불꽃축제 보고왔어. 완전 대박." ||
                     String(m.text || "") === `오 ${nickname || "00"}이 왔구나 하이~\nB는 오늘 도쿄에서 완전 재밌었대!` ||
